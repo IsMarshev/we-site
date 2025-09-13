@@ -1,6 +1,6 @@
 .tips-hero { margin-bottom: 14px; }
 .tips-hero h2 { margin: 0 0 6px; }
-.tips-hero p { margin: 0 0 10px; color:#556; }
+.tips-hero p { margin: 0 0 10px; color: var(--muted); }
 .tips-nav { display:flex; flex-wrap:wrap; gap:10px; }
 .tips-nav a { padding:6px 10px; border:1px solid var(--border); border-radius:8px; text-decoration:none; color:var(--text); background:var(--card-bg); }
 .tips-nav a:hover { border-color:#cbd6ea; }
@@ -16,9 +16,15 @@
 .fact .v { font-weight:600; }
 
 .months { display:grid; grid-template-columns: repeat(12, 1fr); gap:4px; margin-top:8px; margin-bottom:6px; }
-.months span {box-sizing: border-box; text-align:center; padding:6px 0; border-radius:8px; font-size:12px; border:1px solid var(--border); background:color-mix(in oklab, var(--bg) 85%, #fafbff); min-width: 0;}
+.months span {box-sizing: border-box; text-align:center; padding:6px 0; border-radius:8px; font-size:12px; border:1px solid var(--border); background:color-mix(in oklab, var(--bg) 85%, #fafbff); color: var(--text); min-width: 0;}
 .months span.hot { background:#ffe9e6; border-color:#ffd2cc; }
 .months span.mild { background:#fff8d9; border-color:#ffeaa6; }
+
+@media (prefers-color-scheme: dark) {
+  /* Светлые плашки в темной теме требуют темного текста для контраста */
+  .months span.hot,
+  .months span.mild { color: #1a1d21; }
+}
 
 .bullets { margin:0; padding-left:16px; display:grid; gap:6px; }
 .hint { margin-top:8px; color:#567; }

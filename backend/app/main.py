@@ -62,6 +62,22 @@ def create_app() -> FastAPI:
 def seed_initial_data():
     db: Session = SessionLocal()
     try:
+        # Ensure default admin user exists
+        admin_exists = db.query(models.User.id).filter(models.User.username == "admin").first()
+        if not admin_exists:
+            try:
+                from .auth import get_password_hash
+                admin_user = models.User(
+                    username="admin",
+                    email="admin@example.com",
+                    hashed_password=get_password_hash("pioner18"),
+                    role="admin",
+                )
+                db.add(admin_user)
+                db.commit()
+            except Exception:
+                db.rollback()
+
         # If any place exists, skip
         has_place = db.query(models.Place.id).first()
         if has_place:
