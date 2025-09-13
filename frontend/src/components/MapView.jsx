@@ -40,19 +40,26 @@ function FitToMarkers({ positions }) {
 
 export default function MapView({ places, onSelect }) {
   return (
-    <MapContainer className="map-root" center={[-33.9249, 18.4241]} zoom={12} scrollWheelZoom={true}>
-      <TileLayer
-        attribution='&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
-      <FitToMarkers positions={places} />
-      {places.map(p => (
-        <Marker key={p.id} position={[p.latitude, p.longitude]} eventHandlers={{ click: () => onSelect?.(p) }}>
-          <Popup>
-            <b>{p.name}</b>
-          </Popup>
-        </Marker>
-      ))}
-    </MapContainer>
+    <div className="map-wrap">
+      <MapContainer className="map-root" center={[-33.9249, 18.4241]} zoom={12} scrollWheelZoom={true} attributionControl={false}>
+        <TileLayer
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
+        <FitToMarkers positions={places} />
+        {places.map(p => (
+          <Marker key={p.id} position={[p.latitude, p.longitude]} eventHandlers={{ click: () => onSelect?.(p) }}>
+            <Popup>
+              <b>{p.name}</b>
+            </Popup>
+          </Marker>
+        ))}
+      </MapContainer>
+      <div className="map-attrib">
+        <a href="https://leafletjs.com/" target="_blank" rel="noreferrer">Leaflet</a>
+        {' | '}
+        <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">© OpenStreetMap contributors</a>
+      </div>
+    </div>
   )
 }
