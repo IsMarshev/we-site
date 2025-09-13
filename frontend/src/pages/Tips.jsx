@@ -30,7 +30,7 @@ export default function Tips() {
   }
 
   return (
-    <section className="tips">
+    <section className="tips" style={{padding: "0 12px"}}>
       <header className="tips-hero">
         <h2>Советы путешественникам</h2>
         <p>Собрали главное: когда ехать, как передвигаться, где безопасно и что взять с собой.</p>

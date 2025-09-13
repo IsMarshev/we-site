@@ -24,7 +24,7 @@ export default function Register() {
   }
 
   return (
-    <section>
+    <section style={{padding: "0 12px"}}>
       <h2>Регистрация</h2>
       <form onSubmit={submit} style={{display:'grid', gap:10, maxWidth:420}}>
         <input required minLength={3} placeholder="Имя пользователя (мин. 3)" value={form.username} onChange={e=>setForm({...form, username:e.target.value})}/>

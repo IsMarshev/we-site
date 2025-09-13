@@ -73,9 +73,9 @@ export default function Gallery() {
   }
 
   return (
-    <section>
+    <section style={{padding: "0 12px"}}>
       <h2>Фотогалерея</h2>
-      {user && (
+      {user && user.role === 'admin' && (
         <div className="gallery-forms">
           <form onSubmit={addByUrl} className="g-form">
             <h3>Добавить по ссылке</h3>
@@ -119,7 +119,7 @@ export default function Gallery() {
           </figure>
         ))}
         {displayed.length === 0 && (
-          <div style={{color:'#678'}}>Пока нет фотографий. {user ? 'Добавьте первые!' : 'Войдите, чтобы добавить.'}</div>
+          <div style={{color:'#678'}}>Пока нет фотографий. {user?.role === 'admin' ? 'Добавьте первые!' : 'Обратитесь к администратору, чтобы добавить.'}</div>
         )}
       </div>
       {status==='error' && <div style={{color:'crimson', marginTop:8}}>Ошибка. Проверьте вход и данные.</div>}

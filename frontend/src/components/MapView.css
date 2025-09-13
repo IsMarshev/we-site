@@ -1,0 +1,14 @@
+.map-root { width: 100%; height: 420px; border-radius: 12px; overflow: hidden; }
+
+@media (max-width: 900px) {
+  .map-root { height: 360px; }
+}
+
+@media (max-width: 640px) {
+  .map-root { height: 300px; }
+}
+
+@media (max-width: 420px) {
+  .map-root { height: 240px; }
+}
+

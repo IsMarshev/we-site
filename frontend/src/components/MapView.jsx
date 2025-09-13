@@ -2,6 +2,7 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import L from 'leaflet'
 import { useEffect } from 'react'
+import './MapView.css'
 
 // Fix default marker icon paths for Leaflet in bundlers
 delete L.Icon.Default.prototype._getIconUrl
@@ -39,7 +40,7 @@ function FitToMarkers({ positions }) {
 
 export default function MapView({ places, onSelect }) {
   return (
-    <MapContainer style={{height: 420, width: '100%'}} center={[-33.9249, 18.4241]} zoom={12} scrollWheelZoom={true}>
+    <MapContainer className="map-root" center={[-33.9249, 18.4241]} zoom={12} scrollWheelZoom={true}>
       <TileLayer
         attribution='&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

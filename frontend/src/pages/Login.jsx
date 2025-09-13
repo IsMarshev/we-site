@@ -23,7 +23,7 @@ export default function Login() {
   }
 
   return (
-    <section>
+    <section style={{padding: "0 12px"}}>
       <h2>Вход</h2>
       <form onSubmit={submit} style={{display:'grid', gap:10, maxWidth:360}}>
         <input required placeholder="Имя пользователя" value={form.username} onChange={e=>setForm({...form, username:e.target.value})}/>

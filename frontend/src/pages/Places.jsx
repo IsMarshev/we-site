@@ -51,6 +51,13 @@ export default function Places() {
 
   const positions = displayed
 
+  // Autofill author for comments if user is logged in
+  useEffect(() => {
+    if (user?.username) {
+      setCommentForm(prev => ({ ...prev, author: user.username }))
+    }
+  }, [user?.username])
+
   const addComment = async (e) => {
     e.preventDefault()
     if (!selected) return
@@ -73,7 +80,7 @@ export default function Places() {
   }
 
   return (
-    <section>
+    <section style={{padding: "0 12px"}}>
       <h2>Интересные места</h2>
       {loading ? <p>Загрузка...</p> : (
         <>
@@ -131,7 +138,11 @@ export default function Places() {
                   </div>
                 </div>
                 <form onSubmit={addComment} style={{display:'grid', gap:8, marginBottom:8}}>
-                  <input required placeholder="Ваше имя" value={commentForm.author} onChange={e=>setCommentForm({...commentForm, author:e.target.value})}/>
+                  {user ? (
+                    <input value={user.username} disabled />
+                  ) : (
+                    <input required placeholder="Ваше имя" value={commentForm.author} onChange={e=>setCommentForm({...commentForm, author:e.target.value})}/>
+                  )}
                   <textarea required rows={3} placeholder="Комментарий" value={commentForm.content} onChange={e=>setCommentForm({...commentForm, content:e.target.value})}/>
                   <button type="submit">Добавить комментарий</button>
                 </form>

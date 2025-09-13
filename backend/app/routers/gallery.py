@@ -5,7 +5,7 @@ from typing import List, Optional
 
 from ..database import get_db
 from .. import models, schemas
-from ..auth import get_current_user, get_optional_user
+from ..auth import get_current_user, get_optional_user, require_admin
 from sqlalchemy import func
 
 
@@ -18,10 +18,10 @@ def list_gallery(db: Session = Depends(get_db)):
 
 
 @router.post("/url", response_model=schemas.GalleryOut, status_code=201)
-def add_gallery_by_url(payload: schemas.GalleryCreateUrl, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+def add_gallery_by_url(payload: schemas.GalleryCreateUrl, db: Session = Depends(get_db), admin: models.User = Depends(require_admin)):
     if not payload.image_url:
         raise HTTPException(status_code=400, detail="image_url is required")
-    obj = models.GalleryImage(title=payload.title, image_url=payload.image_url, created_by=current_user.id)
+    obj = models.GalleryImage(title=payload.title, image_url=payload.image_url, created_by=admin.id)
     db.add(obj)
     db.commit()
     db.refresh(obj)
@@ -38,7 +38,7 @@ def upload_gallery_image(
     file: UploadFile = File(...),
     title: Optional[str] = Form(None),
     db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_user),
+    admin: models.User = Depends(require_admin),
 ):
     # Save file
     filename = file.filename or "upload.jpg"
@@ -56,7 +56,7 @@ def upload_gallery_image(
 
     # Public URL path (served under /uploads)
     public_url = "/uploads/" + os.path.basename(final_path)
-    obj = models.GalleryImage(title=title, image_url=public_url, created_by=current_user.id)
+    obj = models.GalleryImage(title=title, image_url=public_url, created_by=admin.id)
     db.add(obj)
     db.commit()
     db.refresh(obj)

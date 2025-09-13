@@ -2,19 +2,33 @@
 .places-controls input, .places-controls select { padding:10px; border:1px solid #dfe3ea; border-radius:10px; font-size:14px; }
 
 .places-list { display:grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap:14px; }
-.place-card { display:flex; flex-direction:column; border:1px solid #e6e8ef; border-radius:12px; overflow:hidden; background:#fff; cursor:pointer; transition: transform .12s ease, box-shadow .12s ease; }
+.place-card { display:flex; flex-direction:column; border:1px solid var(--border); border-radius:12px; overflow:hidden; background:var(--card-bg); cursor:pointer; transition: transform .12s ease, box-shadow .12s ease; }
 .place-card:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,0.06); }
-.place-img { width:100%; aspect-ratio: 16 / 9; background:#f5f7fb; }
+.place-img { width:100%; aspect-ratio: 16 / 9; background:color-mix(in oklab, var(--bg) 70%, #f5f7fb); }
 .place-img img { width:100%; height:100%; object-fit:cover; display:block; }
 .place-body { padding:12px; display:flex; flex-direction:column; gap:8px; }
 .place-title-row { display:flex; gap:8px; align-items:baseline; }
 .place-title-row h3 { margin:0; font-size: 18px; }
 .place-title-row .edit-link { margin-left:auto; text-decoration:none; color:#0d6efd; }
-.place-desc { color:#556; margin:0; }
+.place-desc { color:var(--muted); margin:0; }
 .place-actions { display:flex; gap:12px; }
-.place-actions button { display:flex; align-items:center; gap:6px; padding:8px 10px; border:1px solid #ccd3e1; border-radius:10px; background:#fff; cursor:pointer; }
+.place-actions button { display:flex; align-items:center; gap:6px; padding:8px 10px; border:1px solid var(--border); border-radius:10px; background:var(--card-bg); cursor:pointer; }
 .place-actions .btn-like.active { border-color:#0d6efd }
 .place-actions .btn-dislike.active { border-color:#dc3545 }
 .place-actions .num.like { color:#0d6efd; font-weight: 700; }
 .place-actions .num.dislike { color:#dc3545; font-weight: 700; }
 .muted { color:#678; }
+
+@media (max-width: 900px) {
+  .places-controls { gap:8px; }
+}
+
+@media (max-width: 640px) {
+  .places-controls { flex-direction: column; align-items: stretch; }
+  .places-controls input, .places-controls select { width: 100%; }
+  .place-title-row h3 { font-size: 16px; }
+}
+
+@media (max-width: 420px) {
+  .places-list { grid-template-columns: 1fr; }
+}
