@@ -49,4 +49,5 @@ export const api = {
     if (!res.ok) throw new Error('Upload failed')
     return res.json()
   },
+  deleteGalleryImage: (id) => fetchJSON(`/api/gallery/${id}`, { method: 'DELETE' }),
 }

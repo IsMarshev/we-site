@@ -63,6 +63,26 @@ def upload_gallery_image(
     return obj
 
 
+@router.delete("/{image_id}", status_code=204)
+def delete_image(image_id: int, db: Session = Depends(get_db), admin: models.User = Depends(require_admin)):
+    img = db.query(models.GalleryImage).filter(models.GalleryImage.id == image_id).first()
+    if not img:
+        raise HTTPException(status_code=404, detail="Image not found")
+    # Try deleting file if it's a local upload
+    try:
+        if img.image_url and img.image_url.startswith("/uploads/"):
+            fname = os.path.basename(img.image_url)
+            fpath = os.path.join(UPLOAD_DIR, fname)
+            if os.path.exists(fpath):
+                os.remove(fpath)
+    except Exception:
+        # Ignore file delete errors
+        pass
+    db.delete(img)
+    db.commit()
+    return None
+
+
 @router.get("/{image_id}/reactions", response_model=schemas.ReactionOut)
 def get_image_reactions(image_id: int, db: Session = Depends(get_db), current_user: models.User | None = Depends(get_optional_user)):
     likes = db.query(func.count(models.GalleryReaction.id)).filter(models.GalleryReaction.image_id == image_id, models.GalleryReaction.value == 1).scalar() or 0

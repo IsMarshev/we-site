@@ -72,6 +72,21 @@ export default function Gallery() {
     setReactions(prev => ({ ...prev, [id]: r }))
   }
 
+  const remove = async (id) => {
+    if (!user || user.role !== 'admin') return
+    if (!confirm('Удалить фото? Это действие необратимо.')) return
+    try {
+      await api.deleteGalleryImage(id)
+      // Обновим локально без перезагрузки всех реакций
+      setItems(prev => prev.filter(it => it.id !== id))
+      const copy = { ...reactions }
+      delete copy[id]
+      setReactions(copy)
+    } catch (e) {
+      alert('Не удалось удалить фото')
+    }
+  }
+
   return (
     <section style={{padding: "0 12px"}}>
       <h2>Фотогалерея</h2>
@@ -102,6 +117,11 @@ export default function Gallery() {
       <div className="gallery-grid">
         {displayed.map((it) => (
           <figure key={it.id} className="g-item">
+            {user?.role === 'admin' && (
+              <button className="g-delete" onClick={()=>remove(it.id)} title="Удалить">
+                🗑️
+              </button>
+            )}
             <div className="g-thumb">
               <img src={it.image_url} alt={it.title || 'photo'} />
             </div>
