@@ -1,0 +1,41 @@
+version: "3.8"
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      - CT_DB_PATH=/data/db/ct_travel.db
+      - CT_UPLOAD_DIR=/data/uploads
+      - CT_ALLOWED_ORIGINS=*
+      - CT_SECRET_KEY=change-me-in-prod
+    volumes:
+      - db_data:/data/db
+      - uploads:/data/uploads
+    expose:
+      - "8000"
+    networks:
+      - webnet
+
+  web:
+    build:
+      context: .
+      dockerfile: nginx/Dockerfile
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+    volumes:
+      - uploads:/data/uploads:ro
+    networks:
+      - webnet
+
+volumes:
+  db_data:
+  uploads:
+
+networks:
+  webnet:
+    driver: bridge
+

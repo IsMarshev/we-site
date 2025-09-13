@@ -1,0 +1,24 @@
+.home .hero { position: relative; height: 100vh; min-height: 420px; overflow: hidden; margin-bottom: 18px; border-radius: 0; }
+.home .hero.hero-fullbleed { position: relative; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw; width: 100vw; }
+.home .hero-video-el { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center; filter: brightness(0.85); }
+.home .hero-bg { position:absolute; inset:0; background-size:cover; background-position:center; filter: brightness(0.85); }
+.home .hero-overlay { position:absolute; inset:0; background:linear-gradient(to right, rgba(0,0,0,0.55), rgba(0,0,0,0.25)); pointer-events:none; }
+.home .hero-content { position:relative; z-index:2; color:#fff; height:100%; display:flex; flex-direction:column; align-items:flex-start; justify-content:center; padding: 24px; max-width: 720px; }
+.home .hero-content h1 { margin: 0 0 6px; font-size: clamp(28px, 4vw, 44px); }
+.home .hero-content p { margin: 0 0 16px; font-size: clamp(14px, 2vw, 18px); opacity: 0.95; }
+.home .hero-actions { display:flex; gap:12px; }
+.home .btn { background:rgba(255,255,255,0.9); color:#0c2438; border:1px solid rgba(255,255,255,0.7); padding:10px 14px; border-radius:10px; text-decoration:none; font-weight:600; }
+.home .btn:hover { background:#fff; }
+.home .btn.btn-primary { background:#0d6efd; color:#fff; border-color:#0d6efd; }
+.home .btn.btn-primary:hover { background:#0b5ed7; }
+
+.home .features { display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:14px; margin-top: 12px; }
+.home .feature-card { border:1px solid #e6e8ef; border-radius:12px; padding:14px; background:#fff; }
+.home .feature-icon { font-size:24px; }
+.home .feature-card h3 { margin: 8px 0; }
+.home .feature-card p { color:#556; margin: 0 0 8px; }
+.home .feature-card .link { color:#0d6efd; text-decoration:none; font-weight:600; }
+
+.home .cta { text-align:center; padding: 28px 12px; background:linear-gradient(180deg, #f8fbff, #fff); border:1px solid #e9edf5; border-radius: 12px; margin-top: 18px; }
+.home .cta h2 { margin: 0 0 8px; }
+.home .cta p { margin: 0 0 12px; color:#556; }
