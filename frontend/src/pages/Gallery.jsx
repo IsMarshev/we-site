@@ -67,7 +67,6 @@ export default function Gallery() {
   }
 
   const react = async (id, value) => {
-    if (!user) return alert('Войдите, чтобы ставить оценки')
     const r = await api.reactImage(id, value)
     setReactions(prev => ({ ...prev, [id]: r }))
   }

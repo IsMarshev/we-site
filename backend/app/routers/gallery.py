@@ -84,7 +84,12 @@ def delete_image(image_id: int, db: Session = Depends(get_db), admin: models.Use
 
 
 @router.get("/{image_id}/reactions", response_model=schemas.ReactionOut)
-def get_image_reactions(image_id: int, db: Session = Depends(get_db), current_user: models.User | None = Depends(get_optional_user)):
+def get_image_reactions(
+    image_id: int,
+    client_id: str | None = None,
+    db: Session = Depends(get_db),
+    current_user: models.User | None = Depends(get_optional_user),
+):
     likes = db.query(func.count(models.GalleryReaction.id)).filter(models.GalleryReaction.image_id == image_id, models.GalleryReaction.value == 1).scalar() or 0
     dislikes = db.query(func.count(models.GalleryReaction.id)).filter(models.GalleryReaction.image_id == image_id, models.GalleryReaction.value == -1).scalar() or 0
     my = None
@@ -96,25 +101,55 @@ def get_image_reactions(image_id: int, db: Session = Depends(get_db), current_us
         )
         if rec:
             my = rec.value
+    elif client_id:
+        rec = (
+            db.query(models.GalleryReaction)
+            .filter(models.GalleryReaction.image_id == image_id, models.GalleryReaction.client_id == client_id)
+            .first()
+        )
+        if rec:
+            my = rec.value
     return {"likes": likes, "dislikes": dislikes, "my": my}
 
 
 @router.put("/{image_id}/react", response_model=schemas.ReactionOut)
-def react_image(image_id: int, payload: schemas.ReactionIn, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+def react_image(
+    image_id: int,
+    payload: schemas.ReactionIn,
+    db: Session = Depends(get_db),
+    current_user: models.User | None = Depends(get_optional_user),
+):
     img_exists = db.query(models.GalleryImage.id).filter(models.GalleryImage.id == image_id).first()
     if not img_exists:
         raise HTTPException(status_code=404, detail="Image not found")
-    rec = (
-        db.query(models.GalleryReaction)
-        .filter(models.GalleryReaction.image_id == image_id, models.GalleryReaction.user_id == current_user.id)
-        .first()
-    )
+    client_id = (payload.client_id or "").strip() or None
+    if not current_user and not client_id:
+        raise HTTPException(status_code=400, detail="client_id is required for anonymous reactions")
+    if current_user:
+        rec = (
+            db.query(models.GalleryReaction)
+            .filter(models.GalleryReaction.image_id == image_id, models.GalleryReaction.user_id == current_user.id)
+            .first()
+        )
+    else:
+        rec = (
+            db.query(models.GalleryReaction)
+            .filter(models.GalleryReaction.image_id == image_id, models.GalleryReaction.client_id == client_id)
+            .first()
+        )
     if rec and rec.value == payload.value:
         db.delete(rec)
     elif rec:
         rec.value = payload.value
         db.add(rec)
     else:
-        db.add(models.GalleryReaction(image_id=image_id, user_id=current_user.id, value=payload.value))
+        db.add(
+            models.GalleryReaction(
+                image_id=image_id,
+                user_id=current_user.id if current_user else None,
+                client_id=None if current_user else client_id,
+                value=payload.value,
+            )
+        )
     db.commit()
-    return get_image_reactions(image_id, db, current_user)
+    return get_image_reactions(image_id, db=db, current_user=current_user, client_id=client_id)

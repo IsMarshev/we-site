@@ -118,6 +118,7 @@ from pydantic import field_validator
 
 class ReactionIn(BaseModel):
     value: int
+    client_id: Optional[str] = Field(None, max_length=120)
 
     @field_validator('value')
     @classmethod

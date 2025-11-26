@@ -74,7 +74,6 @@ export default function Places() {
   }
 
   const react = async (id, value) => {
-    if (!user) return alert('Войдите, чтобы ставить оценки')
     const r = await api.reactPlace(id, value)
     setReactions(prev => ({ ...prev, [id]: r }))
   }
