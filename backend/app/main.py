@@ -152,6 +152,25 @@ def run_light_migrations():
         except Exception:
             # table missing -> create via metadata
             Base.metadata.create_all(bind=engine)
+        # Add client_id to reactions tables for anonymous likes
+        try:
+            cols = [row[1] for row in conn.exec_driver_sql("PRAGMA table_info(place_reactions)").fetchall()]
+            if "client_id" not in cols:
+                conn.exec_driver_sql("ALTER TABLE place_reactions ADD COLUMN client_id VARCHAR(120)")
+            conn.exec_driver_sql(
+                "CREATE UNIQUE INDEX IF NOT EXISTS uq_place_reaction_client ON place_reactions (place_id, client_id)"
+            )
+        except Exception:
+            pass
+        try:
+            cols = [row[1] for row in conn.exec_driver_sql("PRAGMA table_info(gallery_reactions)").fetchall()]
+            if "client_id" not in cols:
+                conn.exec_driver_sql("ALTER TABLE gallery_reactions ADD COLUMN client_id VARCHAR(120)")
+            conn.exec_driver_sql(
+                "CREATE UNIQUE INDEX IF NOT EXISTS uq_gallery_reaction_client ON gallery_reactions (image_id, client_id)"
+            )
+        except Exception:
+            pass
 
 
 app = create_app()

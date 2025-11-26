@@ -67,21 +67,29 @@ class GalleryImage(Base):
 
 class PlaceReaction(Base):
     __tablename__ = "place_reactions"
-    __table_args__ = (UniqueConstraint("place_id", "user_id", name="uq_place_reaction"),)
+    __table_args__ = (
+        UniqueConstraint("place_id", "user_id", name="uq_place_reaction"),
+        UniqueConstraint("place_id", "client_id", name="uq_place_reaction_client"),
+    )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     place_id: Mapped[int] = mapped_column(ForeignKey("places.id"), index=True)
-    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
+    user_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"), index=True, nullable=True)
+    client_id: Mapped[str | None] = mapped_column(String(120), index=True, nullable=True)
     value: Mapped[int] = mapped_column(Integer)  # 1 for like, -1 for dislike
     created_at: Mapped[str] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
 
 class GalleryReaction(Base):
     __tablename__ = "gallery_reactions"
-    __table_args__ = (UniqueConstraint("image_id", "user_id", name="uq_gallery_reaction"),)
+    __table_args__ = (
+        UniqueConstraint("image_id", "user_id", name="uq_gallery_reaction"),
+        UniqueConstraint("image_id", "client_id", name="uq_gallery_reaction_client"),
+    )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     image_id: Mapped[int] = mapped_column(ForeignKey("gallery_images.id"), index=True)
-    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
+    user_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"), index=True, nullable=True)
+    client_id: Mapped[str | None] = mapped_column(String(120), index=True, nullable=True)
     value: Mapped[int] = mapped_column(Integer)
     created_at: Mapped[str] = mapped_column(DateTime(timezone=True), server_default=func.now())

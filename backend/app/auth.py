@@ -58,8 +58,18 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
 
 
 def get_optional_user(request: Request, db: Session = Depends(get_db)) -> Optional[models.User]:
-    auth = request.headers.get('Authorization')
-    if not auth or not auth.lower().startswith('bearer '):
+    """Return user if bearer token present, otherwise None without raising."""
+    auth = request.headers.get("Authorization")
+    if not auth or not auth.lower().startswith("bearer "):
+        return None
+    token = auth.split(" ", 1)[1].strip()
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        username: str = payload.get("sub")
+        if not username:
+            return None
+        return db.query(models.User).filter(models.User.username == username).first()
+    except Exception:
         return None
 
 
@@ -67,13 +77,3 @@ def require_admin(current_user: models.User = Depends(get_current_user)) -> mode
     if getattr(current_user, "role", "user") != "admin":
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Admin only")
     return current_user
-    token = auth.split(' ', 1)[1]
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username: str = payload.get("sub")
-        if not username:
-            return None
-        user = db.query(models.User).filter(models.User.username == username).first()
-        return user
-    except Exception:
-        return None
