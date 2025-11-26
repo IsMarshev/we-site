@@ -17,7 +17,7 @@ services:
       - "8000"
     networks:
       - webnet
-
+    
   web:
     build:
       context: .
@@ -30,7 +30,6 @@ services:
       - uploads:/data/uploads:ro
     networks:
       - webnet
-
 volumes:
   db_data:
   uploads:
